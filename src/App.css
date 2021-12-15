@@ -3,6 +3,7 @@ h1{
 }
 .App {
   text-align: center;
+  height:100vh;
 }
 
 .App-logo {

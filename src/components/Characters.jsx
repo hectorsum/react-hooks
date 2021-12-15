@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer, useMemo } from 'react';
 
 const initialState = {
   favorites: []
@@ -17,14 +17,22 @@ const favoriteReducer = (state,action) => {
 
 const Characters = () => {
   const [characters, setCharacters] = useState([]);
+  const [search, setSearch] = useState("");
   const [favorites, dispatch] = useReducer(favoriteReducer, initialState);
-  console.log(favorites)
+  console.log(characters)
   useEffect(() => {
     fetch('https://rickandmortyapi.com/api/character/')
       .then(response => response.json())
       .then(data => setCharacters(data.results));
   }, []);
 
+  const filteredCharacters = useMemo(() => 
+    characters.filter(character => character.name.toLowerCase().includes(search.toLowerCase()))
+  , [characters, search])
+  
+
+  const handleSearch = (e) => setSearch(e.target.value)
+  
   const handleClick = (favorite) => {
     dispatch({
       type: "ADD_TO_FAVORITE",
@@ -39,7 +47,8 @@ const Characters = () => {
           {favorite.name}
         </li>
       ))}
-      {characters.map((character) => (
+      <input type='text' value={search} onChange={handleSearch}/>
+      {filteredCharacters.map((character) => (
         <div key={character.id}>
           <h2>{character.name}</h2>
           <button type="button" onClick={() => handleClick(character)}>Add To Favorites</button>
