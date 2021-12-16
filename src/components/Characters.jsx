@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useReducer, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useReducer, useMemo, useRef, useCallback } from 'react';
+import { Search } from './Search';
 
 const initialState = {
   favorites: []
@@ -31,7 +32,10 @@ const Characters = () => {
   , [characters, search])
   
 
-  const handleSearch = () => setSearch(searchInput.current.value)
+  // const handleSearch = () => setSearch(searchInput.current.value)
+  const handleSearch = useCallback(() => {
+    setSearch(searchInput.current.value);
+  },[])
   
   const handleClick = (favorite) => {
     dispatch({
@@ -47,7 +51,7 @@ const Characters = () => {
           {favorite.name}
         </li>
       ))}
-      <input type='text' value={search} onChange={handleSearch} ref={searchInput}/>
+      <Search search={search} handleSearch={handleSearch} searchInput={searchInput}/>
       {filteredCharacters.map((character) => (
         <div key={character.id}>
           <h2>{character.name}</h2>
